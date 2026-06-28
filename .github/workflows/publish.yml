@@ -1,0 +1,65 @@
+name: Publish latest sermon
+
+# Runs a few times after the Sunday service so it publishes as soon as YouTube's
+# captions are ready. Each run does nothing if there's no new sermon or the
+# captions aren't ready yet, so trying multiple times is safe and free.
+on:
+  schedule:
+    - cron: "0 9 * * 0"   # Sunday 09:00 UTC  (~7pm Melbourne, Sunday evening)
+    - cron: "0 21 * * 0"  # Sunday 21:00 UTC  (~7am Melbourne, Monday morning)
+    - cron: "0 9 * * 1"   # Monday 09:00 UTC  (~7pm Melbourne, Monday evening)
+  workflow_dispatch: {}   # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write   # to save new sermon notes back to the repo
+  pages: write      # to publish the website
+  id-token: write   # required by the Pages deploy step
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check for a new sermon and generate its notes
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python publish_latest.py
+
+      - name: Build the website
+        run: python build_site.py
+
+      - name: Save new notes back to the repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add notes processed.json
+          if git diff --staged --quiet; then
+            echo "No new sermon, nothing to commit."
+          else
+            git commit -m "Publish latest sermon notes"
+            git push
+          fi
+
+      - name: Upload the website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

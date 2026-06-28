@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+output/
+.env
+
+# The website is rebuilt from notes/ on every run (and deployed by GitHub
+# Actions), so it doesn't need to be committed.
+site/
+
+# Local editor/preview config.
+.claude/
