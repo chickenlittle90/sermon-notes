@@ -56,10 +56,6 @@ a.site-title{
   font-size:1.1rem;font-weight:700;letter-spacing:-.01em;
   color:var(--ink);text-decoration:none;
 }
-.site-church{
-  font-size:.75rem;font-weight:700;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--sage);
-}
 main{max-width:var(--maxw);margin:0 auto;padding:2.5rem 1.5rem 4rem;}
 .home-eyebrow{
   font-size:.75rem;font-weight:700;letter-spacing:.16em;
@@ -267,7 +263,7 @@ def page(title, inner, depth):
 <link rel="stylesheet" href="{prefix}style.css">
 </head>
 <body>
-<header class="site-header"><a class="site-title" href="{prefix}index.html">{html.escape(SITE_TITLE)}</a><span class="site-church">CityLife Church</span></header>
+<header class="site-header"><a class="site-title" href="{prefix}index.html">{html.escape(SITE_TITLE)}</a></header>
 <main>
 {inner}
 </main>
