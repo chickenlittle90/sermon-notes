@@ -9,6 +9,8 @@ on:
     - cron: "0 21 * * 0"  # Sunday 21:00 UTC  (~7am Melbourne, Monday morning)
     - cron: "0 9 * * 1"   # Monday 09:00 UTC  (~7pm Melbourne, Monday evening)
   workflow_dispatch: {}   # lets you run it by hand from the Actions tab
+  push:
+    branches: [main]      # rebuild and redeploy the site whenever notes change
 
 permissions:
   contents: write   # to save new sermon notes back to the repo
@@ -51,7 +53,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No new sermon, nothing to commit."
           else
-            git commit -m "Publish latest sermon notes"
+            git commit -m "Publish latest sermon notes [skip ci]"
             git push
           fi
 
