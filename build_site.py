@@ -77,8 +77,8 @@ main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.5rem 4rem;}
 .a-theme{display:block;font-size:.9rem;line-height:1.5;color:var(--muted);margin-bottom:.4rem;}
 .a-speaker{display:block;font-size:.78rem;font-weight:500;color:var(--muted2);}
 .a-thumb{
-  width:120px;height:68px;object-fit:cover;
-  border-radius:4px;flex-shrink:0;align-self:center;
+  width:96px;height:54px;object-fit:cover;
+  border-radius:4px;flex-shrink:0;align-self:flex-start;margin-top:.15rem;
 }
 .sermon-eyebrow{
   font-size:.72rem;font-weight:700;letter-spacing:.16em;
@@ -269,18 +269,18 @@ def article_html(note, heading_tag):
     bits.append(
         f'<{heading_tag} class="sermon-title">{html.escape(note["title"])}</{heading_tag}>'
     )
-    meta_line = " · ".join(
-        part
-        for part in (note["speaker"], note["church"], format_date(note["date"]))
-        if part
-    )
+    meta_line = note["speaker"]
     if meta_line:
         bits.append(f'<p class="sermon-meta">{html.escape(meta_line)}</p>')
     video_id = video_id_from_source(note["source"])
     if video_id:
         bits.append(
             '<div class="player">'
-            f'<div id="yt-player" data-video="{html.escape(video_id)}"></div></div>'
+            f'<div id="yt-player" data-video="{html.escape(video_id)}">'
+            f'<iframe src="https://www.youtube.com/embed/{html.escape(video_id)}?rel=0&modestbranding=1" '
+            f'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" '
+            f'allowfullscreen></iframe>'
+            f'</div></div>'
         )
     bits.append(link_timestamps(note["body_html"], note["source"]))
     bits.append("</article>")
