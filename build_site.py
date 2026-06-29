@@ -220,7 +220,7 @@ def link_timestamps(body_html, source):
         url = html.escape(f"{source}{joiner}t={seconds}s")
         return (
             f' <a class="ts" href="{url}" target="_blank" rel="noopener" '
-            f'data-seconds="{seconds}" title="Watch from {label}">{label}</a>'
+            f'data-seconds="{seconds}" title="Watch from {label}" style="color:#fff">{label}</a>'
         )
 
     return re.sub(r"\s*\[t=(\d+)\]", replace, body_html)
