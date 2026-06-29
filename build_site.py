@@ -74,7 +74,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.5rem 4rem;}
 }
 .a-content{flex:1;}
 .a-title{display:block;font-size:1.15rem;font-weight:700;line-height:1.2;margin-bottom:.3rem;}
-.a-theme{display:block;font-size:.9rem;line-height:1.5;color:var(--muted);margin-bottom:.2rem;}
+.a-theme{display:block;font-size:.9rem;line-height:1.5;color:var(--muted);margin-bottom:.4rem;}
 .a-speaker{display:block;font-size:.78rem;font-weight:500;color:var(--muted2);}
 .sermon-eyebrow{
   font-size:.72rem;font-weight:700;letter-spacing:.16em;
@@ -112,7 +112,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.5rem 4rem;}
 .sermon a{color:var(--sage);}
 .ts{
   display:inline-flex;align-items:center;gap:3px;
-  font-size:.7rem;font-weight:700;color:#fff;background:var(--sage);
+  font-size:.7rem;font-weight:700;color:#fff!important;background:var(--sage);
   padding:2px 7px 2px 5px;border-radius:4px;
   text-decoration:none;white-space:nowrap;margin-left:.4rem;vertical-align:middle;
 }
