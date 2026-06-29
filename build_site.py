@@ -76,6 +76,10 @@ main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.5rem 4rem;}
 .a-title{display:block;font-size:1.15rem;font-weight:700;line-height:1.2;margin-bottom:.3rem;}
 .a-theme{display:block;font-size:.9rem;line-height:1.5;color:var(--muted);margin-bottom:.4rem;}
 .a-speaker{display:block;font-size:.78rem;font-weight:500;color:var(--muted2);}
+.a-thumb{
+  width:120px;height:68px;object-fit:cover;
+  border-radius:4px;flex-shrink:0;align-self:center;
+}
 .sermon-eyebrow{
   font-size:.72rem;font-weight:700;letter-spacing:.16em;
   text-transform:uppercase;color:var(--sage);margin-bottom:.6rem;
@@ -107,7 +111,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.5rem 4rem;}
   color:var(--sage);line-height:.95;min-width:1.8rem;
   letter-spacing:-.03em;flex-shrink:0;
 }
-.sermon ol li strong{font-size:1rem;font-weight:700;}
+.sermon ol li strong{font-size:1rem;font-weight:700;display:block;margin-bottom:.35rem;}
 .sermon ol li p{margin:.3rem 0 0;font-size:.95rem;color:var(--muted);}
 .sermon a{color:var(--sage);}
 .ts{
@@ -320,6 +324,8 @@ def build():
     inner = '<p class="home-eyebrow">Weekly Messages</p>\n'
     inner += '<ul class="archive-list">\n'
     for note in notes:
+        vid = video_id_from_source(note["source"])
+        thumb = f'<img class="a-thumb" src="https://img.youtube.com/vi/{vid}/mqdefault.jpg" alt="" loading="lazy">' if vid else ''
         item = f'<li><a href="sermons/{note["slug"]}.html">'
         item += f'<span class="a-date">{format_date(note["date"])}</span>'
         item += '<div class="a-content">'
@@ -328,7 +334,7 @@ def build():
             item += f'<span class="a-theme">{html.escape(note["theme"])}</span>'
         if note["speaker"]:
             item += f'<span class="a-speaker">{html.escape(note["speaker"])}</span>'
-        item += "</div></a></li>\n"
+        item += f'</div>{thumb}</a></li>\n'
         inner += item
     inner += "</ul>\n"
     with open(os.path.join(SITE_DIR, "index.html"), "w", encoding="utf-8") as f:
