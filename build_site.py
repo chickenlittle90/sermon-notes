@@ -36,110 +36,93 @@ STYLE_CSS = """\
   --muted:#65615a;
   --muted2:#8a8378;
   --line:#d9d6cc;
-  --rule:#16160F;
   --maxw:44rem;
 }
 *{box-sizing:border-box;}
 body{
-  margin:0;
-  background:var(--bg);
-  color:var(--ink);
-  font-family:'Space Grotesk',system-ui,sans-serif;
-  line-height:1.6;
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.6;
 }
 .site-header{
-  border-bottom:2px solid var(--rule);
-  padding:1.25rem 2rem;
+  border-bottom:1px solid var(--line);padding:1.1rem 1.5rem;
   display:flex;align-items:center;justify-content:space-between;
 }
 a.site-title{
-  font-size:1.1rem;font-weight:700;letter-spacing:-.01em;
+  font-size:1rem;font-weight:700;letter-spacing:-.01em;
   color:var(--ink);text-decoration:none;
 }
-main{max-width:var(--maxw);margin:0 auto;padding:2.5rem 1.5rem 4rem;}
+a.back-link{
+  font-size:.85rem;font-weight:500;color:var(--muted2);text-decoration:none;
+}
+a.back-link:hover{color:var(--sage);}
+main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.5rem 4rem;}
 .home-eyebrow{
-  font-size:.75rem;font-weight:700;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--sage);margin-bottom:1rem;
+  font-size:.72rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--sage);margin-bottom:1.4rem;
 }
 .archive-list{list-style:none;padding:0;margin:0;}
-.archive-list li{border-top:2px solid var(--rule);padding:1.5rem 0;}
-.archive-list li:last-child{border-bottom:2px solid var(--rule);}
-.archive-list a{display:block;text-decoration:none;color:var(--ink);}
+.archive-list li{border-top:1px solid var(--line);}
+.archive-list li:last-child{border-bottom:1px solid var(--line);}
+.archive-list a{
+  display:flex;gap:1.5rem;padding:1.3rem 0;
+  text-decoration:none;color:var(--ink);align-items:flex-start;
+}
 .archive-list a:hover .a-title{color:var(--sage);}
 .a-date{
-  font-size:.75rem;font-weight:600;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--sage);margin-bottom:.35rem;
+  font-size:.8rem;font-weight:500;color:var(--muted2);
+  white-space:nowrap;min-width:7rem;flex-shrink:0;padding-top:.15rem;
 }
-.a-title{
-  font-size:1.7rem;font-weight:700;line-height:1.1;
-  letter-spacing:-.025em;margin-bottom:.4rem;
-}
-.a-theme{
-  font-size:1rem;line-height:1.55;color:var(--muted);
-  font-weight:400;margin-bottom:.35rem;
-}
-.a-speaker{
-  font-size:.8rem;font-weight:600;color:var(--muted2);letter-spacing:.03em;
-}
+.a-content{flex:1;}
+.a-title{display:block;font-size:1.15rem;font-weight:700;line-height:1.2;margin-bottom:.3rem;}
+.a-theme{display:block;font-size:.9rem;line-height:1.5;color:var(--muted);margin-bottom:.2rem;}
+.a-speaker{display:block;font-size:.78rem;font-weight:500;color:var(--muted2);}
 .sermon-eyebrow{
-  font-size:.75rem;font-weight:700;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--sage);margin-bottom:.5rem;
+  font-size:.72rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--sage);margin-bottom:.6rem;
 }
 .sermon-title{
-  font-size:2.8rem;font-weight:700;line-height:1.0;
-  letter-spacing:-.035em;margin:.1rem 0 .4rem;
+  font-size:2.4rem;font-weight:700;line-height:1.05;
+  letter-spacing:-.03em;margin:.1rem 0 .5rem;
 }
-.sermon-meta{
-  font-size:.9rem;font-weight:500;color:var(--muted2);
-  margin:0 0 1.5rem;
-}
+.sermon-meta{font-size:.9rem;font-weight:500;color:var(--muted2);margin:0 0 1.5rem;}
 .player{
   position:relative;width:100%;aspect-ratio:16/9;
-  margin:.5rem 0 1.5rem;background:#000;overflow:hidden;
-  scroll-margin-top:1rem;
+  margin:.5rem 0 2rem;background:#000;overflow:hidden;scroll-margin-top:1rem;
 }
 .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
 .sermon h2{
-  font-size:.75rem;font-weight:700;letter-spacing:.16em;
+  font-size:.72rem;font-weight:700;letter-spacing:.16em;
   text-transform:uppercase;color:var(--sage);
-  border:none;padding:0;margin:2.2rem 0 .5rem;
+  border:none;padding:0;margin:2rem 0 .75rem;
 }
-.sermon h2::after{
-  content:'';display:block;height:2px;background:var(--rule);margin-top:.4rem;
-}
-.sermon p{font-size:1.05rem;line-height:1.7;color:var(--muted);margin:.5rem 0;}
-.sermon ol{padding-left:0;list-style:none;margin:.5rem 0;}
+.sermon h2::after{content:'';display:block;height:1px;background:var(--line);margin-top:.5rem;}
+.sermon p{font-size:1rem;line-height:1.7;color:var(--muted);margin:.4rem 0;}
+.sermon ol{padding-left:0;list-style:none;margin:.5rem 0;counter-reset:kp;}
 .sermon ol li{
-  border-bottom:1px solid var(--line);padding:1.2rem 0;
-  display:flex;gap:1.2rem;align-items:flex-start;
+  border-bottom:1px solid var(--line);padding:1.1rem 0;
+  display:flex;gap:1.2rem;align-items:flex-start;counter-increment:kp;
 }
 .sermon ol li::before{
-  content:counter(list-item,decimal);counter-increment:list-item;
-  font-size:2rem;font-weight:700;color:var(--sage);line-height:.9;
-  min-width:2rem;letter-spacing:-.03em;
+  content:counter(kp);font-size:1.8rem;font-weight:700;
+  color:var(--sage);line-height:.95;min-width:1.8rem;
+  letter-spacing:-.03em;flex-shrink:0;
 }
-.sermon ol{counter-reset:list-item;}
-.sermon ol li strong{display:block;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.sermon ol li strong{font-size:1rem;font-weight:700;}
+.sermon ol li p{margin:.3rem 0 0;font-size:.95rem;color:var(--muted);}
 .sermon a{color:var(--sage);}
 .ts{
-  display:inline-block;font-size:.72rem;font-weight:700;
-  color:#fff;background:var(--sage);
-  padding:1px 7px;border-radius:4px;
-  text-decoration:none;white-space:nowrap;margin-left:.3rem;
-  vertical-align:middle;
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:.7rem;font-weight:700;color:#fff;background:var(--sage);
+  padding:2px 7px 2px 5px;border-radius:4px;
+  text-decoration:none;white-space:nowrap;margin-left:.4rem;vertical-align:middle;
 }
+.ts::before{content:'▶';font-size:.55rem;}
 .ts:hover{opacity:.8;}
-.back-link{
-  display:inline-block;margin-bottom:2rem;
-  font-size:.8rem;font-weight:600;color:var(--muted2);
-  text-decoration:none;letter-spacing:.01em;
-}
-.back-link:hover{color:var(--sage);}
-@media(max-width:480px){
-  .sermon-title{font-size:2rem;}
-  .a-title{font-size:1.3rem;}
-  .site-header{padding:1rem 1.25rem;}
-  main{padding:1.5rem 1.25rem 3rem;}
+@media(max-width:520px){
+  .sermon-title{font-size:1.8rem;}
+  .a-date{min-width:5.5rem;font-size:.75rem;}
+  .site-header{padding:.9rem 1.1rem;}
+  main{padding:1.5rem 1.1rem 3rem;}
 }
 """
 
@@ -251,7 +234,7 @@ def format_date(value):
         return value
 
 
-def page(title, inner, depth):
+def page(title, inner, depth, header_right=""):
     """Wrap inner HTML in the shared page shell. depth=1 for /sermons/* pages."""
     prefix = "../" if depth else ""
     return f"""<!DOCTYPE html>
@@ -263,7 +246,10 @@ def page(title, inner, depth):
 <link rel="stylesheet" href="{prefix}style.css">
 </head>
 <body>
-<header class="site-header"><a class="site-title" href="{prefix}index.html">{html.escape(SITE_TITLE)}</a></header>
+<header class="site-header">
+  <a class="site-title" href="{prefix}index.html">{html.escape(SITE_TITLE)}</a>
+  {header_right}
+</header>
 <main>
 {inner}
 </main>
@@ -320,11 +306,11 @@ def build():
 
     # One page per sermon.
     for note in notes:
-        inner = '<a class="back-link" href="../index.html">← All sermon notes</a>\n'
-        inner += article_html(note, "h1")
+        inner = article_html(note, "h1")
         if video_id_from_source(note["source"]):
             inner += PLAYER_SCRIPTS
-        out = page(note["title"], inner, depth=1)
+        back = '<a class="back-link" href="../index.html">← All sermon notes</a>'
+        out = page(note["title"], inner, depth=1, header_right=back)
         with open(os.path.join(SERMONS_DIR, note["slug"] + ".html"), "w", encoding="utf-8") as f:
             f.write(out)
 
@@ -336,12 +322,13 @@ def build():
     for note in notes:
         item = f'<li><a href="sermons/{note["slug"]}.html">'
         item += f'<span class="a-date">{format_date(note["date"])}</span>'
+        item += '<div class="a-content">'
         item += f'<span class="a-title">{html.escape(note["title"])}</span>'
         if note["theme"]:
             item += f'<span class="a-theme">{html.escape(note["theme"])}</span>'
         if note["speaker"]:
             item += f'<span class="a-speaker">{html.escape(note["speaker"])}</span>'
-        item += "</a></li>\n"
+        item += "</div></a></li>\n"
         inner += item
     inner += "</ul>\n"
     with open(os.path.join(SITE_DIR, "index.html"), "w", encoding="utf-8") as f:
