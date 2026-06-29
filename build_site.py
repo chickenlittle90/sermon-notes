@@ -77,7 +77,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.5rem 4rem;}
 .a-theme{display:block;font-size:.9rem;line-height:1.5;color:var(--muted);margin-bottom:.4rem;}
 .a-speaker{display:block;font-size:.78rem;font-weight:500;color:var(--muted2);}
 .a-thumb{
-  width:96px;height:54px;object-fit:cover;
+  width:140px;height:79px;object-fit:cover;
   border-radius:4px;flex-shrink:0;align-self:flex-start;margin-top:.15rem;
 }
 .sermon-eyebrow{
