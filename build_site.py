@@ -28,88 +28,122 @@ SERMONS_DIR = os.path.join(SITE_DIR, "sermons")
 SITE_TITLE = "Sermon Notes"
 
 STYLE_CSS = """\
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 :root{
-  --bg:#faf7f1;
-  --surface:#ffffff;
-  --ink:#2a2724;
-  --muted:#6b645c;
-  --accent:#9a3b2e;
-  --line:#e7e0d6;
-  --maxw:42rem;
+  --bg:#F4F3EE;
+  --ink:#16160F;
+  --sage:#1F4D43;
+  --muted:#65615a;
+  --muted2:#8a8378;
+  --line:#d9d6cc;
+  --rule:#16160F;
+  --maxw:44rem;
 }
 *{box-sizing:border-box;}
-html{font-size:112.5%;}
 body{
   margin:0;
   background:var(--bg);
   color:var(--ink);
-  font-family:Georgia,'Times New Roman',serif;
-  line-height:1.65;
+  font-family:'Space Grotesk',system-ui,sans-serif;
+  line-height:1.6;
 }
-.site-header{border-bottom:1px solid var(--line);background:var(--surface);}
+.site-header{
+  border-bottom:2px solid var(--rule);
+  padding:1.25rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
 a.site-title{
-  display:block;
-  max-width:var(--maxw);
-  margin:0 auto;
-  padding:1.1rem 1.25rem;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  font-weight:600;font-size:1.05rem;letter-spacing:.02em;
+  font-size:1.1rem;font-weight:700;letter-spacing:-.01em;
   color:var(--ink);text-decoration:none;
 }
-main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.25rem 3rem;}
-.eyebrow{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;
-  color:var(--accent);margin:0 0 .4rem;
+.site-church{
+  font-size:.75rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--sage);
 }
-.sermon-title{font-size:2rem;line-height:1.2;margin:.1rem 0 .3rem;}
-.sermon-meta{color:var(--muted);font-style:italic;margin:0 0 1.2rem;}
+main{max-width:var(--maxw);margin:0 auto;padding:2.5rem 1.5rem 4rem;}
+.home-eyebrow{
+  font-size:.75rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--sage);margin-bottom:1rem;
+}
+.archive-list{list-style:none;padding:0;margin:0;}
+.archive-list li{border-top:2px solid var(--rule);padding:1.5rem 0;}
+.archive-list li:last-child{border-bottom:2px solid var(--rule);}
+.archive-list a{display:block;text-decoration:none;color:var(--ink);}
+.archive-list a:hover .a-title{color:var(--sage);}
+.a-date{
+  font-size:.75rem;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--sage);margin-bottom:.35rem;
+}
+.a-title{
+  font-size:1.7rem;font-weight:700;line-height:1.1;
+  letter-spacing:-.025em;margin-bottom:.4rem;
+}
+.a-theme{
+  font-size:1rem;line-height:1.55;color:var(--muted);
+  font-weight:400;margin-bottom:.35rem;
+}
+.a-speaker{
+  font-size:.8rem;font-weight:600;color:var(--muted2);letter-spacing:.03em;
+}
+.sermon-eyebrow{
+  font-size:.75rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--sage);margin-bottom:.5rem;
+}
+.sermon-title{
+  font-size:2.8rem;font-weight:700;line-height:1.0;
+  letter-spacing:-.035em;margin:.1rem 0 .4rem;
+}
+.sermon-meta{
+  font-size:.9rem;font-weight:500;color:var(--muted2);
+  margin:0 0 1.5rem;
+}
 .player{
-  position:relative;width:100%;aspect-ratio:16/9;margin:.2rem 0 1rem;
-  background:#000;border-radius:8px;overflow:hidden;scroll-margin-top:1rem;
+  position:relative;width:100%;aspect-ratio:16/9;
+  margin:.5rem 0 1.5rem;background:#000;overflow:hidden;
+  scroll-margin-top:1rem;
 }
 .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
 .sermon h2{
-  font-size:1.15rem;margin:1.8rem 0 .4rem;padding-bottom:.25rem;
-  border-bottom:1px solid var(--line);
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:.75rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--sage);
+  border:none;padding:0;margin:2.2rem 0 .5rem;
 }
-.sermon ol{padding-left:1.3rem;}
-.sermon ol li{margin:.6rem 0;}
-.sermon a{color:var(--accent);}
+.sermon h2::after{
+  content:'';display:block;height:2px;background:var(--rule);margin-top:.4rem;
+}
+.sermon p{font-size:1.05rem;line-height:1.7;color:var(--muted);margin:.5rem 0;}
+.sermon ol{padding-left:0;list-style:none;margin:.5rem 0;}
+.sermon ol li{
+  border-bottom:1px solid var(--line);padding:1.2rem 0;
+  display:flex;gap:1.2rem;align-items:flex-start;
+}
+.sermon ol li::before{
+  content:counter(list-item,decimal);counter-increment:list-item;
+  font-size:2rem;font-weight:700;color:var(--sage);line-height:.9;
+  min-width:2rem;letter-spacing:-.03em;
+}
+.sermon ol{counter-reset:list-item;}
+.sermon ol li strong{display:block;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.sermon a{color:var(--sage);}
 .ts{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  font-size:.78rem;color:var(--accent);text-decoration:none;white-space:nowrap;
+  display:inline-block;font-size:.72rem;font-weight:700;
+  color:#fff;background:var(--sage);
+  padding:1px 7px;border-radius:4px;
+  text-decoration:none;white-space:nowrap;margin-left:.3rem;
+  vertical-align:middle;
 }
-.ts:hover{text-decoration:underline;}
-.home-sub{color:var(--muted);font-size:1rem;margin:.2rem 0 1.6rem;}
-.archive-list{list-style:none;padding:0;margin:0;}
-.archive-list li{border-bottom:1px solid var(--line);}
-.archive-list li:first-child{border-top:1px solid var(--line);}
-.archive-list a{display:block;padding:1.15rem 0;text-decoration:none;color:var(--ink);}
-.archive-list a:hover .a-title{color:var(--accent);}
-.a-date{
-  display:block;margin-bottom:.2rem;color:var(--muted);font-size:.8rem;letter-spacing:.02em;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-}
-.a-title{display:block;font-size:1.25rem;line-height:1.25;margin-bottom:.3rem;}
-.a-theme{display:block;color:var(--muted);font-size:.97rem;line-height:1.45;margin-bottom:.35rem;}
-.a-speaker{
-  display:block;color:var(--muted);font-size:.8rem;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-}
+.ts:hover{opacity:.8;}
 .back-link{
-  display:inline-block;margin-bottom:1.5rem;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  font-size:.85rem;color:var(--muted);text-decoration:none;
+  display:inline-block;margin-bottom:2rem;
+  font-size:.8rem;font-weight:600;color:var(--muted2);
+  text-decoration:none;letter-spacing:.01em;
 }
-.site-footer{
-  max-width:var(--maxw);margin:0 auto;padding:2rem 1.25rem 3rem;
-  color:var(--muted);font-size:.8rem;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-}
+.back-link:hover{color:var(--sage);}
 @media(max-width:480px){
-  .sermon-title{font-size:1.6rem;}
+  .sermon-title{font-size:2rem;}
+  .a-title{font-size:1.3rem;}
+  .site-header{padding:1rem 1.25rem;}
+  main{padding:1.5rem 1.25rem 3rem;}
 }
 """
 
@@ -233,7 +267,7 @@ def page(title, inner, depth):
 <link rel="stylesheet" href="{prefix}style.css">
 </head>
 <body>
-<header class="site-header"><a class="site-title" href="{prefix}index.html">{html.escape(SITE_TITLE)}</a></header>
+<header class="site-header"><a class="site-title" href="{prefix}index.html">{html.escape(SITE_TITLE)}</a><span class="site-church">CityLife Church</span></header>
 <main>
 {inner}
 </main>
@@ -245,6 +279,7 @@ def page(title, inner, depth):
 def article_html(note, heading_tag):
     """The sermon write-up itself: title, meta line, notes body, source link."""
     bits = ['<article class="sermon">']
+    bits.append(f'<p class="sermon-eyebrow">{html.escape(format_date(note["date"]))}</p>')
     bits.append(
         f'<{heading_tag} class="sermon-title">{html.escape(note["title"])}</{heading_tag}>'
     )
@@ -300,9 +335,7 @@ def build():
     # The index: a clickable list of every sermon, newest first. Nothing is
     # opened by default, the reader taps a date to read that week's notes.
     church = notes[0]["church"]
-    inner = ""
-    if church:
-        inner += f'<p class="home-sub">Weekly messages from {html.escape(church)}</p>\n'
+    inner = '<p class="home-eyebrow">Weekly Messages</p>\n'
     inner += '<ul class="archive-list">\n'
     for note in notes:
         item = f'<li><a href="sermons/{note["slug"]}.html">'
