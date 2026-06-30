@@ -124,9 +124,11 @@ main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.5rem 4rem;}
 .ts:hover{opacity:.8;}
 @media(max-width:520px){
   .sermon-title{font-size:1.8rem;}
-  .a-date{min-width:5.5rem;font-size:.75rem;}
   .site-header{padding:.9rem 1.1rem;}
   main{padding:1.5rem 1.1rem 3rem;}
+  .archive-list a{flex-direction:column;gap:.6rem;padding:1.1rem 0;}
+  .a-date{min-width:auto;font-size:.75rem;}
+  .a-thumb{width:100%;height:auto;aspect-ratio:16/9;border-radius:6px;}
 }
 """
 
