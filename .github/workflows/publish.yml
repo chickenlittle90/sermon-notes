@@ -5,9 +5,16 @@ name: Publish latest sermon
 # captions aren't ready yet, so trying multiple times is safe and free.
 on:
   schedule:
+    # Several attempts across the week. Each run does nothing if there's no new
+    # sermon, if the captions aren't ready yet, or if YouTube's feed is briefly
+    # unreachable, so trying often is safe and free. The extra weekday runs catch
+    # a sermon whose captions land late or whose feed was flaky over the weekend.
     - cron: "0 9 * * 0"   # Sunday 09:00 UTC  (~7pm Melbourne, Sunday evening)
     - cron: "0 21 * * 0"  # Sunday 21:00 UTC  (~7am Melbourne, Monday morning)
     - cron: "0 9 * * 1"   # Monday 09:00 UTC  (~7pm Melbourne, Monday evening)
+    - cron: "0 21 * * 1"  # Monday 21:00 UTC  (~7am Melbourne, Tuesday morning)
+    - cron: "0 21 * * 2"  # Tuesday 21:00 UTC (~7am Melbourne, Wednesday morning)
+    - cron: "0 21 * * 3"  # Wednesday 21:00 UTC (~7am Melbourne, Thursday morning)
   workflow_dispatch: {}   # lets you run it by hand from the Actions tab
   push:
     branches: [main]      # rebuild and redeploy the site whenever notes change

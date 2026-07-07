@@ -17,6 +17,7 @@ Requires the ANTHROPIC_API_KEY environment variable (except for --dry-run).
 
 import json
 import os
+import random
 import re
 import sys
 import time
@@ -42,26 +43,35 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 PROCESSED_FILE = os.path.join(ROOT, "processed.json")
 
 
+# YouTube's feed endpoint is flaky and intermittently answers a perfectly valid
+# request with 404/500. It does this MUCH more often from datacenter IPs (e.g.
+# GitHub Actions runners) than from a home connection, so the automated run needs
+# to retry patiently. GitHub jobs can run for hours, so spending a couple of
+# minutes retrying here is cheap insurance against skipping a week's sermon.
+FEED_ATTEMPTS = 10
+FEED_HOSTS = ("www.youtube.com", "youtube.com")
+
+
 def fetch_feed_entries():
     """Return the channel's recent videos as dicts: {id, title, date}, newest first.
 
-    YouTube's feed endpoint is flaky and intermittently answers a good request
-    with 404/500, so we retry a few times before giving up. Without this a single
-    transient error would fail the whole scheduled run and the week's sermon would
-    be silently skipped until the next Sunday.
+    Retries patiently through YouTube's intermittent 404/500 responses (see the
+    note above FEED_ATTEMPTS). Raises the last error only if every attempt fails.
     """
-    feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
-    request = urllib.request.Request(feed_url, headers={"User-Agent": "Mozilla/5.0"})
     last_err = None
-    for attempt in range(5):
+    for attempt in range(FEED_ATTEMPTS):
+        host = FEED_HOSTS[attempt % len(FEED_HOSTS)]
+        feed_url = f"https://{host}/feeds/videos.xml?channel_id={CHANNEL_ID}"
+        request = urllib.request.Request(feed_url, headers={"User-Agent": "Mozilla/5.0"})
         try:
             with urllib.request.urlopen(request, timeout=20) as resp:
                 xml = resp.read().decode("utf-8", "replace")
             break
         except Exception as err:  # transient network/HTTP error, retry with backoff
             last_err = err
-            if attempt < 4:
-                time.sleep(3 * (attempt + 1))
+            if attempt < FEED_ATTEMPTS - 1:
+                # Growing backoff with jitter, capped, so a bad streak gets ~2 min.
+                time.sleep(min(5 + 3 * attempt, 20) + random.uniform(0, 2))
     else:
         raise last_err
 
@@ -144,8 +154,11 @@ def main():
     try:
         entries = fetch_feed_entries()
     except Exception as err:
-        print(f"Couldn't read the YouTube feed: {err}")
-        sys.exit(1)
+        # YouTube's feed is temporarily unreachable (it 404s/500s at random,
+        # especially from datacenter IPs). This isn't a real error and shouldn't
+        # fail the build, exit cleanly so the next scheduled run just tries again.
+        print(f"Couldn't read the YouTube feed right now ({err}). Will try again next run.")
+        sys.exit(0)
 
     latest = find_latest_sermon(entries)
     if not latest:
