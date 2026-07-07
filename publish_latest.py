@@ -19,6 +19,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.request
 import warnings
 
@@ -42,10 +43,27 @@ PROCESSED_FILE = os.path.join(ROOT, "processed.json")
 
 
 def fetch_feed_entries():
-    """Return the channel's recent videos as dicts: {id, title, date}, newest first."""
+    """Return the channel's recent videos as dicts: {id, title, date}, newest first.
+
+    YouTube's feed endpoint is flaky and intermittently answers a good request
+    with 404/500, so we retry a few times before giving up. Without this a single
+    transient error would fail the whole scheduled run and the week's sermon would
+    be silently skipped until the next Sunday.
+    """
     feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
-    with urllib.request.urlopen(feed_url, timeout=20) as resp:
-        xml = resp.read().decode("utf-8", "replace")
+    request = urllib.request.Request(feed_url, headers={"User-Agent": "Mozilla/5.0"})
+    last_err = None
+    for attempt in range(5):
+        try:
+            with urllib.request.urlopen(request, timeout=20) as resp:
+                xml = resp.read().decode("utf-8", "replace")
+            break
+        except Exception as err:  # transient network/HTTP error, retry with backoff
+            last_err = err
+            if attempt < 4:
+                time.sleep(3 * (attempt + 1))
+    else:
+        raise last_err
 
     entries = []
     for block in re.findall(r"<entry>.*?</entry>", xml, re.S):
