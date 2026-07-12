@@ -108,25 +108,43 @@ def video_duration_seconds(video_id):
     return int(match.group(1)) if match else None
 
 
-def find_latest_sermon(entries):
-    """Pick the newest feed entry that is the weekly service.
+def is_service(entry):
+    """Return True if a feed entry is a weekly full service (not a clip/update).
 
     A video qualifies if it is clearly long (the full service), or if its title
     looks like a service and it isn't just a short clip. Length is read from the
     watch page, so a mistitled-but-long video is still caught and a short clip
-    with a service-like title is skipped.
+    with a service-like title is skipped. If the length can't be read, we fall
+    back to trusting the title.
     """
+    title_match = any(k in entry["title"].lower() for k in TITLE_KEYWORDS)
+    duration = video_duration_seconds(entry["id"])
+    if duration is not None:
+        if duration >= LONG_SECONDS:
+            return True
+        if title_match and duration >= TITLED_MIN_SECONDS:
+            return True
+        return False
+    return title_match  # couldn't read the length, so trust the title
+
+
+def find_unpublished_sermons(entries, processed):
+    """Return every not-yet-published service in the feed, OLDEST first.
+
+    The feed only holds the ~15 most recent uploads, so this catches up any week
+    that was missed (e.g. captions landed late, or YouTube's feed was flaky when
+    the scheduled run fired) as long as the sermon is still in the feed. Publishing
+    oldest-first keeps the site's archive in date order. We only check the length
+    of entries we haven't published yet, so this stays cheap.
+    """
+    todo = []
     for entry in entries:  # the feed is newest-first
-        title_match = any(k in entry["title"].lower() for k in TITLE_KEYWORDS)
-        duration = video_duration_seconds(entry["id"])
-        if duration is not None:
-            if duration >= LONG_SECONDS:
-                return entry
-            if title_match and duration >= TITLED_MIN_SECONDS:
-                return entry
-        elif title_match:
-            return entry  # couldn't read the length, so trust the title
-    return None
+        if entry["id"] in processed:
+            continue
+        if is_service(entry):
+            todo.append(entry)
+    todo.reverse()  # publish oldest first
+    return todo
 
 
 def load_processed():
@@ -160,35 +178,42 @@ def main():
         print(f"Couldn't read the YouTube feed right now ({err}). Will try again next run.")
         sys.exit(0)
 
-    latest = find_latest_sermon(entries)
-    if not latest:
-        print("No full-length service found in the latest feed. Nothing to do.")
-        sys.exit(0)
-
     processed = load_processed()
+    todo = find_unpublished_sermons(entries, processed)
 
-    if latest["id"] in processed:
-        print(f"Latest sermon already published ({latest['id']}). Nothing to do.")
+    if not todo:
+        print("No new sermons to publish. Nothing to do.")
         sys.exit(0)
 
-    print(f"New sermon found: {latest['title']} ({latest['date']})")
+    print(f"Found {len(todo)} sermon(s) to publish.")
 
     if dry_run:
-        print("(dry run) Would publish this sermon. Not generating.")
+        for entry in todo:
+            print(f"(dry run) Would publish: {entry['date']}  {entry['title']}")
         sys.exit(0)
 
-    result = generate_notes.process_video(latest["id"], latest["date"])
-    if result == "done":
-        processed.append(latest["id"])
-        save_processed(processed)
-        print("Published. The website is up to date.")
-        sys.exit(0)
-    elif result == "not_ready":
-        # Don't record it, so the next run tries again once captions are ready.
-        print("Captions aren't ready yet. Will try again on the next run.")
-        sys.exit(0)
-    else:
-        sys.exit(1)
+    published_any = False
+    for entry in todo:
+        print(f"Publishing: {entry['title']} ({entry['date']})")
+        result = generate_notes.process_video(entry["id"], entry["date"])
+        if result == "done":
+            # Save after each success so a failure part-way through a catch-up
+            # still records the sermons we did manage to publish.
+            processed.append(entry["id"])
+            save_processed(processed)
+            published_any = True
+            print("  Published.")
+        elif result == "not_ready":
+            # Don't record it, so a later run retries once captions are ready.
+            print("  Captions aren't ready yet, will try again on the next run.")
+        else:
+            print("  Couldn't generate notes for this one, will try again next run.")
+
+    if published_any:
+        print("Done. The website is up to date.")
+    # Always exit cleanly: any sermon we skipped (captions not ready, or a hiccup)
+    # is simply retried on the next scheduled run, and we don't want to red-fail.
+    sys.exit(0)
 
 
 if __name__ == "__main__":
